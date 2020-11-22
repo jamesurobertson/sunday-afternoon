@@ -12,6 +12,7 @@ export const setBrew = (brewery) => ({
 });
 
 function brewReducer(state = { brewery: "", brews: [] }, action) {
+  let newState;
   switch (action.type) {
     case SET_BREW:
       newState = Object.assign({}, state, { brewery: action.payload });
