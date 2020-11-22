@@ -29,7 +29,7 @@ const HooksDemo = () => {
     })();
     //return value from use effect will cleanup the interval.
     // otherwise the interval will never stop.
-  }, [counter, city]);
+  }, [city]);
 
   console.log(count);
 
