@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import * as brewStore from "../store/brews";
+import Breweries from "./Breweries";
 
 let count = 0;
 const HooksDemo = () => {
@@ -11,25 +14,15 @@ const HooksDemo = () => {
   const [city, setCity] = useState("san diego");
   const [brews, setBrews] = useState([]);
 
+  const dispatch = useDispatch();
+
   count++;
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(
-          `https://api.openbrewerydb.org/breweries?by_city=${city}`
-        );
-        if (!res.ok) throw res;
-
-        const data = await res.json();
-        setBrews(data);
-      } catch (e) {
-        console.log(e);
-      }
-    })();
     //return value from use effect will cleanup the interval.
     // otherwise the interval will never stop.
-  }, [city]);
+    dispatch(brewStore.setBrewsThunk(city));
+  }, [city, dispatch]);
 
   console.log(count);
 
@@ -46,16 +39,7 @@ const HooksDemo = () => {
       <button onClick={() => setCounter(counter + 1)}>Increment</button>
       <button onClick={() => setCounter(counter - 1)}>Decrement</button>
       <input value={city} onChange={changeHandler} />
-      <div style={{ display: "flex", flexFlow: "column" }}>
-        {brews.map((brews) => {
-          const { name, website_url } = brews;
-          return (
-            <a key={name} href={website_url}>
-              {name}
-            </a>
-          );
-        })}
-      </div>
+      <Breweries />
     </>
   );
 };

@@ -11,15 +11,28 @@ export const setBrew = (brewery) => ({
   payload: brewery,
 });
 
-function brewReducer(state = { brewery: "", brews: [] }, action) {
+export const setBrewsThunk = (city) => async (dispatch) => {
+  try {
+    const res = await fetch(
+      `https://api.openbrewerydb.org/breweries?by_city=${city}`
+    );
+    if (!res.ok) throw res;
+
+    const brews = await res.json();
+    dispatch(setAllBrews(brews));
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+function brewReducer(state = { brewery: "", breweries: [] }, action) {
   let newState;
   switch (action.type) {
     case SET_BREW:
       newState = Object.assign({}, state, { brewery: action.payload });
       return newState;
     case SET_ALL_BREWS:
-      newState = Object.assign({}, state, { brews: action.payload });
-      return newState;
+      return { ...state, breweries: action.payload };
     default:
       return state;
   }
