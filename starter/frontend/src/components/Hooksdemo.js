@@ -8,36 +8,54 @@ const HooksDemo = () => {
   // like class components this.state = {counter: 0, name='james'}
   // to upadte it we had invoke  this.setState({counter: this.state.counter +1})
   const [counter, setCounter] = useState(0);
-  const [name, setName] = useState("james");
+  const [city, setCity] = useState("san diego");
+  const [brews, setBrews] = useState([]);
 
   count++;
 
   useEffect(() => {
-    console.log("useEffect invoked");
-    const interval = setInterval(() => console.log("hello james"), 1000);
+    (async () => {
+      try {
+        const res = await fetch(
+          `https://api.openbrewerydb.org/breweries?by_city=${city}`
+        );
+        if (!res.ok) throw res;
 
-    return () => {
-      //return value from use effect will cleanup the interval.
-      // otherwise the interval will never stop.
-      clearInterval(interval);
-    };
-  }, [counter, name]);
+        const data = await res.json();
+        setBrews(data);
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+    //return value from use effect will cleanup the interval.
+    // otherwise the interval will never stop.
+  }, [counter, city]);
 
   console.log(count);
 
   const changeHandler = (e) => {
-    setName(e.target.value);
-    // never do this!!!  name = e.target.value;
+    setCity(e.target.value);
+    // never do this!!!  city = e.target.value;
   };
   return (
     <>
       <h1> Hooks!</h1>
       <h1>
-        {counter} {name}
+        {counter} {city}
       </h1>
       <button onClick={() => setCounter(counter + 1)}>Increment</button>
       <button onClick={() => setCounter(counter - 1)}>Decrement</button>
-      <input value={name} onChange={changeHandler} />
+      <input value={city} onChange={changeHandler} />
+      <div style={{ display: "flex", flexFlow: "column" }}>
+        {brews.map((brews) => {
+          const { name, website_url } = brews;
+          return (
+            <a key={name} href={website_url}>
+              {name}
+            </a>
+          );
+        })}
+      </div>
     </>
   );
 };
