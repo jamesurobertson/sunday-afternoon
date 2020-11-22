@@ -14,7 +14,14 @@ const HooksDemo = () => {
 
   useEffect(() => {
     console.log("useEffect invoked");
-  }, [counter]);
+    const interval = setInterval(() => console.log("hello james"), 1000);
+
+    return () => {
+      //return value from use effect will cleanup the interval.
+      // otherwise the interval will never stop.
+      clearInterval(interval);
+    };
+  }, [counter, name]);
 
   console.log(count);
 
