@@ -12,7 +12,7 @@ const HooksDemo = () => {
   // to upadte it we had invoke  this.setState({counter: this.state.counter +1})
   const [counter, setCounter] = useState(0);
   const [city, setCity] = useState("san diego");
-  const [brews, setBrews] = useState([]);
+  const [brewsLoaded, setBrewsLoaded] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -21,7 +21,7 @@ const HooksDemo = () => {
   useEffect(() => {
     //return value from use effect will cleanup the interval.
     // otherwise the interval will never stop.
-    dispatch(brewStore.setBrewsThunk(city));
+    dispatch(brewStore.setBrewsThunk(city)).then(() => setBrewsLoaded(true));
   }, [city, dispatch]);
 
   console.log(count);
@@ -39,7 +39,7 @@ const HooksDemo = () => {
       <button onClick={() => setCounter(counter + 1)}>Increment</button>
       <button onClick={() => setCounter(counter - 1)}>Decrement</button>
       <input value={city} onChange={changeHandler} />
-      <Breweries />
+      {brewsLoaded ? <Breweries /> : "Fetch still going"}
     </>
   );
 };
